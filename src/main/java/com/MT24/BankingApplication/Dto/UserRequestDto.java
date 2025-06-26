@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class UserRequestDto {
@@ -42,4 +44,8 @@ public class UserRequestDto {
     @NotNull(message = "Initial balance is required")
     @PositiveOrZero(message = "Balance must be zero or more")
     private Double accountBalance;
+
+    // In UserRequestDto.java
+    private List<String> roles;
+
 }

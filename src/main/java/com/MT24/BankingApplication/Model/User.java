@@ -7,18 +7,19 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users") // Maps to 'users' table in DB
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @Column(name = "account_number", unique = true, nullable = false, length = 20)
     private String accountNumber;
@@ -42,8 +43,6 @@ public class User {
     @Column(length = 6)
     private Long pincode;
 
-
-
     @Column(name = "account_balance", nullable = false)
     private Double accountBalance;
 
@@ -56,4 +55,17 @@ public class User {
 
     @UpdateTimestamp
     private LocalDateTime accountModifiedAt;
+
+    // 🔥 Add this
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private List<String> roles = new ArrayList<>();
 }
+/*
+@ElementCollection: Indicates a collection of simple values (not entities).
+
+@CollectionTable: Creates a user_roles table with foreign key user_id.
+
+@Column(name = "role"): Each role value will be stored as a row in that table.
+ */

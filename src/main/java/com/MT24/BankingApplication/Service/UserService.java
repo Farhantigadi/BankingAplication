@@ -1,18 +1,15 @@
 package com.MT24.BankingApplication.Service;
 
-import com.MT24.BankingApplication.Model.User;
-import com.MT24.BankingApplication.Repositoy.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.MT24.BankingApplication.Dto.LoginResponseDto;
 
-public class UserService {
 
-    @Autowired
-    User user;
+import com.MT24.BankingApplication.dto.UserRequestDto;
+import com.MT24.BankingApplication.dto.UserResponseDto;
 
-    @Autowired
-    UserRepo userRepo;
+public interface UserService {
+    LoginResponseDto registerUser(UserRequestDto userRequestDto);
+    UserResponseDto registerAdmin(UserRequestDto dto);
 
-    public void createUser(User user){
-       userRepo.save(user);
-    }
+
 }
+

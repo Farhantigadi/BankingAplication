@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +21,7 @@ public class UserResponseDto {
     private Double accountBalance;
     private LocalDateTime accountCreatedAt;
     private LocalDateTime accountModifiedAt;
+    // In UserRequestDto.java
+    private List<String> roles;
+
 }
