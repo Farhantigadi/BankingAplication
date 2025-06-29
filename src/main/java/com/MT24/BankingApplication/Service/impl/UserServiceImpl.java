@@ -21,7 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-
+    @Autowired
+    jwtUtil jwtUtil;
     @Autowired
     private final UserRepository userRepository;
    @Autowired
@@ -90,6 +91,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return mapToResponse(user);
+    }
+
+    @Override
+    public User getUserInfo(String accountNumber) {
+        return userRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
 

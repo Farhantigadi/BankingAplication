@@ -16,9 +16,9 @@ import java.util.Map;
 public class jwtUtil {
 
     @Value("${jwt.secret-key}")
-    private static String SECRET_KEY;
+    private  String SECRET_KEY;
 
-    private static SecretKey getSigningKey() {
+    private  SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
@@ -42,12 +42,12 @@ public class jwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public static String generateToken(String username) {
+    public  String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, username);
     }
 
-    private static String createToken(Map<String, Object> claims, String subject) {
+    private  String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .claims(claims) //// Additional data (empty for now)
                 .subject(subject)// username
