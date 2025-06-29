@@ -1,4 +1,4 @@
-package com.MT24.BankingApplication.Service.impl;
+package com.MT24.BankingApplication.Service;
 
 
 import com.MT24.BankingApplication.Dto.LoginResponseDto;
@@ -98,6 +98,42 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+    public String deposit(String accountNumber, Double amount) {
+        User user = userRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be positive");
+        }
+
+        user.setAccountBalance(user.getAccountBalance() + amount);
+        user.setAccountModifiedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        return "₹" + amount + " deposited. New balance: ₹" + user.getAccountBalance();
+    }
+    public String withdraw(String accountNumber, Double amount) {
+        if (amount == null || amount <= 0) {
+            throw new IllegalArgumentException("Invalid amount");
+        }
+
+        User user = userRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getAccountBalance() < amount) {
+            throw new RuntimeException("Insufficient balance");
+        }
+
+        double oldBalance = user.getAccountBalance();
+        user.setAccountBalance(oldBalance - amount);
+        userRepository.save(user);
+
+        return "Withdrawn ₹" + amount + " successfully. Remaining balance: ₹" + user.getAccountBalance();
+    }
+
+
+
+
 
 
 

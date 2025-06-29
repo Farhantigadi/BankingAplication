@@ -7,7 +7,7 @@ import com.MT24.BankingApplication.Dto.LoginResponseDto;
 import com.MT24.BankingApplication.Model.User;
 import com.MT24.BankingApplication.Repositoy.UserRepository;
 
-import com.MT24.BankingApplication.Service.impl.UserServiceImpl;
+import com.MT24.BankingApplication.Service.UserServiceImpl;
 import com.MT24.BankingApplication.util.jwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

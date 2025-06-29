@@ -13,6 +13,7 @@ public interface UserService {
     User getUserInfo(String accountNumber);
 
 
-
+    String deposit(String accountNumber, Double amount);
+    String withdraw(String accountNumber, Double amount);
 }
 
