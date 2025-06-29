@@ -131,12 +131,52 @@ public class UserServiceImpl implements UserService {
         return "Withdrawn ₹" + amount + " successfully. Remaining balance: ₹" + user.getAccountBalance();
     }
 
+    public String transferMoney(String senderAcc, String receiverAcc, Double amount) {
+        if (amount <= 0) {
+            throw new RuntimeException("Transfer amount must be greater than 0");
+        }
 
+        User sender = userRepository.findByAccountNumber(senderAcc)
+                .orElseThrow(() -> new RuntimeException("Sender not found"));
+        User receiver = userRepository.findByAccountNumber(receiverAcc)
+                .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
+        if (sender.getAccountBalance() < amount) {
+            throw new RuntimeException("Insufficient balance");
+        }
 
+        // Perform transfer
+        sender.setAccountBalance(sender.getAccountBalance() - amount);
+        receiver.setAccountBalance(receiver.getAccountBalance() + amount);
 
+        sender.setAccountModifiedAt(LocalDateTime.now());
+        receiver.setAccountModifiedAt(LocalDateTime.now());
 
+        userRepository.save(sender);
+        userRepository.save(receiver);
+
+        return "Transferred ₹" + amount + " from " + senderAcc + " to " + receiverAcc +
+                ". Remaining balance: ₹" + sender.getAccountBalance();
+    }
+        @Override
+        public String getBalance(String accountNumber) {
+            User user = userRepository.findByAccountNumber(accountNumber)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            return "Dear " + user.getFirstName() + ", your current account balance is ₹" + user.getAccountBalance();
+        }
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
 

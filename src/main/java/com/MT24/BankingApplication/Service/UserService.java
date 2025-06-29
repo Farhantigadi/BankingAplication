@@ -15,5 +15,10 @@ public interface UserService {
 
     String deposit(String accountNumber, Double amount);
     String withdraw(String accountNumber, Double amount);
+
+    String transferMoney(String senderAccount, String receiverAccount, Double amount);
+    String getBalance(String accountNumber);
+
+
 }
 

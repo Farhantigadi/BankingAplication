@@ -36,7 +36,7 @@ public class SpringSecurity {
                                 "/v3/api-docs.yaml"
                         ).permitAll()
 
-                        .requestMatchers("/public/**", "/user/**","/login/**").permitAll()
+                        .requestMatchers("/login/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

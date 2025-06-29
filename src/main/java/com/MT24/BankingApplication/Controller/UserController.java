@@ -60,5 +60,30 @@ public class UserController {
         String response = userService.withdraw(accountNumber, amount);
         return ResponseEntity.ok(response);
     }
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transferMoney(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody Map<String, Object> payload) {
 
+        String token = authHeader.substring(7);
+        String senderAccount = jwtUtil.extractUsername(token); // Sender from token
+
+        String receiverAccount = payload.get("receiverAccountNumber").toString();
+        Double amount = Double.parseDouble(payload.get("amount").toString());
+
+        String result = userService.transferMoney(senderAccount, receiverAccount, amount);
+        return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/balance")
+    public ResponseEntity<String> getBalance(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7); // Remove "Bearer "
+        String accountNumber = jwtUtil.extractUsername(token);
+
+        String message = userService.getBalance(accountNumber);
+        return ResponseEntity.ok(message);
+    }
+
+
+
+}
