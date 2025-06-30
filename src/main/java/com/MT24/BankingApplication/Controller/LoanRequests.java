@@ -1,6 +1,7 @@
 package com.MT24.BankingApplication.Controller;
 
 import com.MT24.BankingApplication.Dto.LoanApplicationRequest;
+import com.MT24.BankingApplication.Dto.LoanRepaymentRequest;
 import com.MT24.BankingApplication.Model.Loan;
 import com.MT24.BankingApplication.Service.LoanServiceImpl;
 import com.MT24.BankingApplication.util.jwtUtil;
@@ -35,5 +36,19 @@ public class LoanRequests {
         List<Loan> loans = loanService.getLoansByAccount(accountNumber);
         return ResponseEntity.ok(loans);
     }
+
+    @PostMapping("/repay")
+    public ResponseEntity<String> repayLoan(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody LoanRepaymentRequest request
+    ) {
+        String token = authHeader.substring(7);
+        String accountNumber = jwtUtil.extractUsername(token);
+        String result = loanService.repayLoan(accountNumber, request.getAmount());
+        return ResponseEntity.ok(result);
+    }
+
+
+
 
 }

@@ -60,6 +60,7 @@ public class AuthController {
             return ResponseEntity.status(401).build(); // Unauthorized
         }
     }
+
     @PostMapping("/register-admin")
     public ResponseEntity<UserResponseDto> registerAdmin(@RequestBody @Valid UserRequestDto dto) {
         try {
