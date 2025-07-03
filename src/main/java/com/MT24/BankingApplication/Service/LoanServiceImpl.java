@@ -9,6 +9,8 @@ import com.MT24.BankingApplication.Repositoy.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -51,30 +53,35 @@ public class LoanServiceImpl {
     }
 
     public String repayLoan(String accountNumber, Double amount) {
+        // 🔒 Only allow repayment if the loan is APPROVED
         List<Loan> loans = loanRepository.findByAccountNumber(accountNumber).stream()
-                .filter(loan -> loan.getStatus().equals("APPROVED") || loan.getStatus().equals("PENDING"))
+                .filter(loan -> loan.getStatus().equals("APPROVED"))
                 .toList();
 
         if (loans.isEmpty()) {
-            throw new IllegalStateException("No active loan found for this account.");
+            throw new IllegalStateException("No approved loan found for this account.");
         }
 
-        Loan loan = loans.get(0); // Pick the first active loan
+        Loan loan = loans.get(0); // Pick the first approved loan
 
-        // ✅ Update the amountPaid
         double currentPaid = loan.getAmountPaid() == null ? 0.0 : loan.getAmountPaid();
         double newPaid = currentPaid + amount;
 
-        // Prevent overpayment
+        // 🚫 Prevent overpayment
         if (newPaid > loan.getAmount()) {
-            throw new IllegalStateException("Repayment exceeds total loan amount.");
+            throw new IllegalStateException("Repayment exceeds remaining loan amount.");
         }
 
         loan.setAmountPaid(newPaid);
-        loanRepository.save(loan); // ✅ Save the updated loan
+
+        // Optional: Mark as PAID if fully repaid
+        if (newPaid >= loan.getAmount()) {
+            loan.setStatus("PAID");
+        }
+
+        loanRepository.save(loan); // 💾 Save updated loan
 
         double remaining = loan.getAmount() - newPaid;
-
         return String.format("Payment of ₹%.2f received. Remaining loan amount: ₹%.2f", amount, remaining);
     }
 
@@ -94,3 +101,5 @@ public class LoanServiceImpl {
         };
     }
 }
+
+
