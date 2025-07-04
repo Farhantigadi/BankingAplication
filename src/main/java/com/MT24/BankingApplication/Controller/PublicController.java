@@ -2,6 +2,7 @@ package com.MT24.BankingApplication.Controller;
 
 import com.MT24.BankingApplication.Dto.LoginResponseDto;
 import com.MT24.BankingApplication.Service.UserServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ public class PublicController {
     @Autowired
     UserServiceImpl userService;
     @PostMapping("/register-user")
+    @Operation(summary = "Register user", description = "Registers a new user and returns login credentials")
     public ResponseEntity<LoginResponseDto> registerUser(@RequestBody @Valid UserRequestDto dto) {
         try {
             return new ResponseEntity<>(userService.registerUser(dto), HttpStatus.CREATED);
