@@ -9,6 +9,7 @@ import com.MT24.BankingApplication.dto.UserRequestDto;
 import com.MT24.BankingApplication.dto.UserResponseDto;
 
 import com.MT24.BankingApplication.util.jwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -98,13 +99,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
-    public String deposit(String accountNumber, Double amount) {
-        User user = userRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (amount <= 0) {
+    @Transactional
+    public synchronized String deposit(String accountNumber, Double amount) {
+        if (amount == null || amount <= 0) {
             throw new IllegalArgumentException("Deposit amount must be positive");
         }
+
+        User user = userRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setAccountBalance(user.getAccountBalance() + amount);
         user.setAccountModifiedAt(LocalDateTime.now());
@@ -112,7 +114,9 @@ public class UserServiceImpl implements UserService {
 
         return "₹" + amount + " deposited. New balance: ₹" + user.getAccountBalance();
     }
-    public String withdraw(String accountNumber, Double amount) {
+
+    @Transactional
+    public synchronized String withdraw(String accountNumber, Double amount) {
         if (amount == null || amount <= 0) {
             throw new IllegalArgumentException("Invalid amount");
         }
@@ -124,16 +128,17 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Insufficient balance");
         }
 
-        double oldBalance = user.getAccountBalance();
-        user.setAccountBalance(oldBalance - amount);
+        user.setAccountBalance(user.getAccountBalance() - amount);
+        user.setAccountModifiedAt(LocalDateTime.now());
         userRepository.save(user);
 
         return "Withdrawn ₹" + amount + " successfully. Remaining balance: ₹" + user.getAccountBalance();
     }
 
-    public String transferMoney(String senderAcc, String receiverAcc, Double amount) {
-        if (amount <= 0) {
-            throw new RuntimeException("Transfer amount must be greater than 0");
+    @Transactional
+    public synchronized String transferMoney(String senderAcc, String receiverAcc, Double amount) {
+        if (amount == null || amount <= 0) {
+            throw new IllegalArgumentException("Transfer amount must be greater than 0");
         }
 
         User sender = userRepository.findByAccountNumber(senderAcc)
@@ -145,10 +150,8 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Insufficient balance");
         }
 
-        // Perform transfer
         sender.setAccountBalance(sender.getAccountBalance() - amount);
         receiver.setAccountBalance(receiver.getAccountBalance() + amount);
-
         sender.setAccountModifiedAt(LocalDateTime.now());
         receiver.setAccountModifiedAt(LocalDateTime.now());
 
@@ -158,6 +161,7 @@ public class UserServiceImpl implements UserService {
         return "Transferred ₹" + amount + " from " + senderAcc + " to " + receiverAcc +
                 ". Remaining balance: ₹" + sender.getAccountBalance();
     }
+
         @Override
         public String getBalance(String accountNumber) {
             User user = userRepository.findByAccountNumber(accountNumber)
