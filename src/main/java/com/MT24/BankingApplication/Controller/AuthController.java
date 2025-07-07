@@ -73,7 +73,15 @@ public class AuthController {
         }
     }
 
-
+    @PostMapping("/register-admin")
+    @Operation(summary = "Register admin", description = "Registers a new admin account")
+    public ResponseEntity<UserResponseDto> registerAdmin(@RequestBody @Valid UserRequestDto dto) {
+        try {
+            return new ResponseEntity<>(userService.registerAdmin(dto), HttpStatus.CREATED);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
+    }
     // 🔍 1. View all loan applications
     @GetMapping("/loans/all")
     @Operation(summary = "View all loans", description = "Returns a list of all loan applications")
