@@ -40,7 +40,6 @@ public class Loan {
     @Column(nullable = false)
     private Double amountPaid = 0.0; // default 0
 
-
     @CreationTimestamp
     private LocalDateTime appliedAt ;
 }

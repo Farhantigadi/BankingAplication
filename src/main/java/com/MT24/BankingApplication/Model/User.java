@@ -56,8 +56,7 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime accountModifiedAt;
 
-    // 🔥 Add this
-    @ElementCollection(fetch = FetchType.EAGER)
+     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private List<String> roles = new ArrayList<>();

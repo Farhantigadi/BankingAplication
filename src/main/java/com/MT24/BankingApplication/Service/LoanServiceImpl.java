@@ -1,5 +1,5 @@
 package com.MT24.BankingApplication.Service;
-
+import  java.util.*;
 import com.MT24.BankingApplication.Dto.LoanApplicationRequest;
 import com.MT24.BankingApplication.Model.Loan;
 import com.MT24.BankingApplication.Model.LoanType;
@@ -81,6 +81,8 @@ public class LoanServiceImpl {
 
         loanRepository.save(loan); // 💾 Save updated loan
 
+
+
         double remaining = loan.getAmount() - newPaid;
         return String.format("Payment of ₹%.2f received. Remaining loan amount: ₹%.2f", amount, remaining);
     }
@@ -101,5 +103,6 @@ public class LoanServiceImpl {
         };
     }
 }
+
 
 
